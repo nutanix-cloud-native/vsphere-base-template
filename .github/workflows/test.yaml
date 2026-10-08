@@ -44,7 +44,7 @@ on:
           - oraclelinux-9.4
           - oraclelinux-8.10
           - os-oraclelinux
-          - flatcar-4081.3.9
+          - flatcar-4081.3.10
           - os-flatcar
 env:
   VSPHERE_USERNAME: ${{ secrets.VSPHERE_NKP_SRE_USERNAME }}
