@@ -95,7 +95,7 @@ centos-release: centos-7.9-release
 centos-7.9-ovf: manifests/ovf/d2iq-base-CentOS-7.9$(NAME_POSTFIX).ovf
 centos-ovf: centos-7.9-ovf
 
-rhel: manifests/d2iq-base-RHEL-86$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-88$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-810$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-94$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-96$(NAME_POSTFIX).json
+rhel: manifests/d2iq-base-RHEL-86$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-88$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-810$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-94$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-96$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-98$(NAME_POSTFIX).json
 rhel-8.4-test: manifests/tests/d2iq-base-RHEL-84$(NAME_POSTFIX).json.clean
 rhel-8.4-test-clean: rhel-8.4-test manifests/d2iq-base-RHEL-84$(NAME_POSTFIX).json.clean
 rhel-8.6-test: manifests/tests/d2iq-base-RHEL-86$(NAME_POSTFIX).json.clean
@@ -108,21 +108,25 @@ rhel-9.4-test: manifests/tests/d2iq-base-RHEL-94$(NAME_POSTFIX).json.clean
 rhel-9.4-test-clean: rhel-9.4-test manifests/d2iq-base-RHEL-94$(NAME_POSTFIX).json.clean
 rhel-9.6-test: manifests/tests/d2iq-base-RHEL-96$(NAME_POSTFIX).json.clean
 rhel-9.6-test-clean: rhel-9.6-test manifests/d2iq-base-RHEL-96$(NAME_POSTFIX).json.clean
-rhel-test: rhel-8.4-test-clean rhel-8.6-test-clean rhel-8.8-test-clean rhel-8.10-test-clean rhel-9.4-test-clean rhel-9.6-test-clean
+rhel-9.8-test: manifests/tests/d2iq-base-RHEL-98$(NAME_POSTFIX).json.clean
+rhel-9.8-test-clean: rhel-9.8-test manifests/d2iq-base-RHEL-98$(NAME_POSTFIX).json.clean
+rhel-test: rhel-8.4-test-clean rhel-8.6-test-clean rhel-8.8-test-clean rhel-8.10-test-clean rhel-9.4-test-clean rhel-9.6-test-clean rhel-9.8-test-clean
 rhel-8.4-release: rhel-8.4-test release/d2iq-base-RHEL-84$(NAME_POSTFIX)
 rhel-8.6-release: rhel-8.6-test release/d2iq-base-RHEL-86$(NAME_POSTFIX)
 rhel-8.8-release: rhel-8.8-test release/d2iq-base-RHEL-88$(NAME_POSTFIX)
 rhel-8.10-release: rhel-8.10-test release/d2iq-base-RHEL-810$(NAME_POSTFIX)
 rhel-9.4-release: rhel-9.4-test release/d2iq-base-RHEL-94$(NAME_POSTFIX)
 rhel-9.6-release: rhel-9.6-test release/d2iq-base-RHEL-96$(NAME_POSTFIX)
-rhel-release: rhel-8.4-release rhel-8.6-release rhel-8.8-release rhel-8.10-release rhel-9.4-release rhel-9.6-release
+rhel-9.8-release: rhel-9.8-test release/d2iq-base-RHEL-98$(NAME_POSTFIX)
+rhel-release: rhel-8.4-release rhel-8.6-release rhel-8.8-release rhel-8.10-release rhel-9.4-release rhel-9.6-release rhel-9.8-release
 rhel-8.4-ovf: manifests/ovf/d2iq-base-RHEL-84$(NAME_POSTFIX).ovf
 rhel-8.6-ovf: manifests/ovf/d2iq-base-RHEL-86$(NAME_POSTFIX).ovf
 rhel-8.8-ovf: manifests/ovf/d2iq-base-RHEL-88$(NAME_POSTFIX).ovf
 rhel-8.10-ovf: manifests/ovf/d2iq-base-RHEL-810$(NAME_POSTFIX).ovf
 rhel-9.4-ovf: manifests/ovf/d2iq-base-RHEL-94$(NAME_POSTFIX).ovf
 rhel-9.6-ovf: manifests/ovf/d2iq-base-RHEL-96$(NAME_POSTFIX).ovf
-rhel-ovf: rhel-8.4-ovf rhel-8.6-ovf rhel-8.8-ovf rhel-8.10-ovf rhel-9.4-ovf rhel-9.6-ovf
+rhel-9.8-ovf: manifests/ovf/d2iq-base-RHEL-98$(NAME_POSTFIX).ovf
+rhel-ovf: rhel-8.4-ovf rhel-8.6-ovf rhel-8.8-ovf rhel-8.10-ovf rhel-9.4-ovf rhel-9.6-ovf rhel-9.8-ovf
 
 oraclelinux: manifests/d2iq-base-OracleLinux-810$(NAME_POSTFIX).json manifests/d2iq-base-OracleLinux-94$(NAME_POSTFIX).json
 oraclelinux-8.10-test: manifests/tests/d2iq-base-OracleLinux-810$(NAME_POSTFIX).json.clean

@@ -53,7 +53,7 @@ There are distribution based make targets for building images
 - `make centos` - Centos 7.9
 - `make oraclelinux` - OracleLinux 9.10
 - `make flatcar` - Flatcar LTS
-- `make rhel` - RHEL 7.9(EOL no longer tested), 8.6 and 8.8, 8.10, 9.4, 9.6
+- `make rhel` - RHEL 7.9(EOL no longer tested), 8.6 and 8.8, 8.10, 9.4, 9.6. 9.8
 
 Templates and VMs are created by default in the folder `build-d2iq-base-templates` This can be changed by injecting the environment variable `VSPHERE_FOLDER`
 
