@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # shellcheck disable=SC2154 # Ignore undefined vars passed from Packer
 cat <<EOF >/tmp/ignition.json
@@ -42,6 +43,20 @@ cat <<EOF >/tmp/ignition.json
 }
 EOF
 
-flatcar-install -d /dev/sda -o vmware_raw -i /tmp/ignition.json
+# Live ISO has no open-vm-tools; Packer only sees an IP after install+reboot.
+# Wait for DHCP before downloading the vmware_raw image from the LTS mirror.
+echo "waiting for network..."
+for _ in $(seq 1 60); do
+  if ip -4 route show default | grep -q .; then
+    break
+  fi
+  sleep 2
+done
+ip -4 route show default | grep -q . || { echo "no default route"; exit 1; }
+
+# Pin LTS mirror/version so install does not fall back to a wrong channel.
+flatcar-install -d /dev/sda -o vmware_raw -i /tmp/ignition.json \
+  -b https://lts.release.flatcar-linux.net/amd64-usr \
+  -V "${distribution_version}"
 
 reboot
