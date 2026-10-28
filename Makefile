@@ -15,7 +15,7 @@ manifests/d2iq-base-%$(NAME_POSTFIX).json: packer.initialized vsphere.pkr.hcl $(
 
 .PHONY: manifests/d2iq-base-%$(NAME_POSTFIX).json.clean
 manifests/d2iq-base-%$(NAME_POSTFIX).json.clean: manifests/d2iq-base-%$(NAME_POSTFIX).json
-	bash -x mkinclude/helper_deletetemplate.sh $(shell jq -r '.builds[0].custom_data.template' $<) "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
+	bash -x mkinclude/helper_deletetemplate.sh $(shell jq -r '.builds[0].custom_data.template_name' $<) "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
 	mv $< $@
 
 manifests/tests/d2iq-base-%$(NAME_POSTFIX).json: manifests/d2iq-base-%$(NAME_POSTFIX).json clone-test.pkr.hcl
@@ -126,7 +126,7 @@ oraclelinux-9.4-ovf: manifests/ovf/d2iq-base-OracleLinux-94$(NAME_POSTFIX).ovf
 oraclelinux-ovf: oraclelinux-9.4-ovf
 
 flatcar: manifests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json
-flatcar-4081.3.10-test: manifests/tests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json
+flatcar-4081.3.10-test: manifests/tests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json.clean
 flatcar-4081.3.10-test-clean: flatcar-4081.3.10-test manifests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json.clean
 flatcar-test: flatcar-4081.3.10-test-clean
 flatcar-4081.3.10-release: flatcar-4081.3.10-test release/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX)
