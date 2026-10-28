@@ -1,7 +1,8 @@
 #!/bin/bash
+# Packer templatefile injects public_key / distribution_version at render time.
+# shellcheck disable=SC2154
 set -euo pipefail
 
-# shellcheck disable=SC2154 # Ignore undefined vars passed from Packer
 cat <<EOF >/tmp/ignition.json
 {
   "ignition": {
