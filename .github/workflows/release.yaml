@@ -52,7 +52,7 @@ jobs:
   build_list:
     runs-on: self-hosted-nutanix-medium
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -104,7 +104,10 @@ jobs:
       - name: Run release for ${{ matrix.os }}
         run: make ${{ matrix.os }}-release
 
+  # GitHub Release + asset upload are tag-only. Manual workflow_dispatch rebuilds
+  # templates/OVFs without publishing a release (github.ref is refs/heads/... then).
   create_release:
+    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write
     name: Create Github release
@@ -118,8 +121,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
 
@@ -171,6 +174,7 @@ jobs:
           echo "listovf=$DATA" >> "$GITHUB_OUTPUT"
 
   releaseassets:
+    if: startsWith(github.ref, 'refs/tags/')
     name: Upload release assets
     permissions:
       contents: write
