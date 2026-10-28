@@ -15,7 +15,9 @@ env:
   PKR_VAR_vsphere_resource_pool: ${{ secrets.VSPHERE_RESOURCE_POOL }}
   RHN_SUBSCRIPTION_ORG: ${{ secrets.RHN_SUBSCRIPTION_ORG }}
   RHN_SUBSCRIPTION_KEY: ${{ secrets.RHN_SUBSCRIPTION_KEY }}
-  PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Authenticated GitHub API for packer plugin installs (avoids IP rate limits).
+  PACKER_GITHUB_API_TOKEN: ${{ github.token }}
+  GITHUB_TOKEN: ${{ github.token }}
 
 on:
   push:
@@ -29,19 +31,13 @@ on:
         required: true
         options:
           - all
-          - ubuntu-20
           - ubuntu-22
           - ubuntu-24
+          - ubuntu-26
           - os-ubuntu
-          - rocky-8.7
-          - rocky-9.1
-          - rocky-9.5
-          - rocky-9.6
           - rocky-9.7
           - rocky-9.8
           - os-rocky
-          - centos-7.9
-          - os-centos
           - rhel-8.6
           - rhel-8.8
           - rhel-8.10
@@ -50,7 +46,6 @@ on:
           - rhel-9.8
           - os-rhel
           - oraclelinux-9.4
-          - oraclelinux-8.10
           - os-oraclelinux
           - flatcar-4081.3.10
           - os-flatcar
@@ -59,7 +54,7 @@ jobs:
   build_list:
     runs-on: self-hosted-nutanix-medium
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -109,9 +104,15 @@ jobs:
           sudo apt-get update && sudo apt-get -y install xorriso
           curl -L -o - "https://github.com/vmware/govmomi/releases/latest/download/govc_$(uname -s)_$(uname -m).tar.gz" | sudo tar -C /usr/local/bin -xvzf - govc
       - name: Run release for ${{ matrix.os }}
-        run: make ${{ matrix.os }}-release
+        run: |
+          # Stagger parallel matrix jobs so packer init does not stampede GitHub API.
+          sleep $((RANDOM % 90))
+          make ${{ matrix.os }}-release
 
+  # GitHub Release + asset upload are tag-only. Manual workflow_dispatch rebuilds
+  # templates/OVFs without publishing a release (github.ref is refs/heads/... then).
   create_release:
+    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write
     name: Create Github release
@@ -125,8 +126,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
 
@@ -138,11 +139,12 @@ jobs:
       fail-fast: false
       matrix: 
         os: 
-          - ubuntu-20
           - ubuntu-22
           - ubuntu-24
+          - ubuntu-26
           - rocky-8.7
-          - rocky-9.1
+          - rocky-9.7
+          - rocky-9.8
     steps:
       - uses: actions/checkout@v3
         with:
@@ -177,6 +179,7 @@ jobs:
           echo "listovf=$DATA" >> "$GITHUB_OUTPUT"
 
   releaseassets:
+    if: startsWith(github.ref, 'refs/tags/')
     name: Upload release assets
     permissions:
       contents: write

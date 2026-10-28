@@ -213,6 +213,7 @@ locals {
     "RockyLinux"      = "${path.root}/bootfiles/rocky/rocky.ks"
     "RockyLinux-8.7"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
     "RockyLinux-9.1"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
+    "RockyLinux-9.7"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
     "CentOS"          = "${path.root}/bootfiles/centos/centos7.ks"
     "OracleLinux"     = "${path.root}/bootfiles/oraclelinux/oraclelinux9.ks"
     "Ubuntu"          = "${path.root}/bootfiles/ubuntu/autoinstall.yaml"
@@ -278,8 +279,12 @@ locals {
   ]
 
   flatcar_bootcommand = [
-    "<wait><wait><wait>",
-    "sudo mkdir /bootfiles<enter>",
+    # Flatcar ISO needs a longer settle time before the console shell is ready.
+    # Packer cannot observe a guest IP until after flatcar-install reboots into
+    # the vmware_raw image (live ISO has no open-vm-tools).
+    # Live console is the unprivileged `core` user, so sudo is required.
+    "<wait30><wait10>",
+    "sudo mkdir -p /bootfiles<enter>",
     "sudo mount -o loop /dev/sr1 /bootfiles<enter>",
     "sudo bash /bootfiles/bootfile.sh<enter>",
   ]
@@ -295,6 +300,7 @@ locals {
     "Ubuntu-20.04" = local.ubuntu_bootcommand
     "Ubuntu-22.04" = local.ubuntu_jammy_bootcommand
     "Ubuntu-24.04" = local.ubuntu_noble_bootcommand
+    "Ubuntu-26.04" = local.ubuntu_noble_bootcommand
     "Flatcar"      = local.flatcar_bootcommand
   }
 
@@ -307,7 +313,9 @@ locals {
   default_bootwait = "10s"
   # lookup by <distro_name>-<distro_version> fallback to <distro_version> fallback to local.default_bootwait
   distro_bootwait_lookup = {
-    "Ubuntu" = "1s"
+    # Keep short enough to catch GRUB before autoboot, long enough for EFI firmware.
+    "Ubuntu" = "5s"
+    "Flatcar" = "45s"
   }
 
   # lookup by <distro_name>-<distro_version> fallback to <distro_version> fallback to ""

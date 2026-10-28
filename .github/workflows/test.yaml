@@ -32,8 +32,6 @@ on:
           - rocky-9.7
           - rocky-9.8
           - os-rocky
-          - centos-7.9
-          - os-centos
           - rhel-8.4
           - rhel-8.6
           - rhel-8.8
@@ -43,7 +41,6 @@ on:
           - rhel-9.8
           - os-rhel
           - oraclelinux-9.4
-          - oraclelinux-8.10
           - os-oraclelinux
           - flatcar-4081.3.10
           - os-flatcar
@@ -61,7 +58,9 @@ env:
   PKR_VAR_vsphere_resource_pool: ${{ secrets.VSPHERE_RESOURCE_POOL }}
   RHN_SUBSCRIPTION_ORG: ${{ secrets.RHN_SUBSCRIPTION_ORG }}
   RHN_SUBSCRIPTION_KEY: ${{ secrets.RHN_SUBSCRIPTION_KEY }}
-  PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Authenticated GitHub API for packer plugin installs (avoids IP rate limits).
+  PACKER_GITHUB_API_TOKEN: ${{ github.token }}
+  GITHUB_TOKEN: ${{ github.token }}
   NAME_POSTFIX: "-gh-run-${{ github.run_id }}"
 
 jobs:
@@ -146,4 +145,7 @@ jobs:
           sudo apt-get update && sudo apt-get -y install xorriso
           curl -L -o - "https://github.com/vmware/govmomi/releases/latest/download/govc_$(uname -s)_$(uname -m).tar.gz" | sudo tar -C /usr/local/bin -xvzf - govc
       - name: Run integration tests for ${{ matrix.os }}
-        run: make ${{ matrix.os }}-test-clean
+        run: |
+          # Stagger parallel matrix jobs so packer init does not stampede GitHub API.
+          sleep $((RANDOM % 90))
+          make ${{ matrix.os }}-test-clean
