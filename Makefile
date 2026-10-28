@@ -74,15 +74,6 @@ rocky-9.7-ovf: manifests/ovf/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).ovf
 rocky-9.8-ovf: manifests/ovf/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).ovf
 rocky-ovf: rocky-8.7-ovf rocky-9.7-ovf rocky-9.8-ovf
 
-centos: manifests/d2iq-base-CentOS-7.9$(NAME_POSTFIX).json
-centos-7.9-test: manifests/tests/d2iq-base-CentOS-7.9$(NAME_POSTFIX).json.clean
-centos-7.9-test-clean: centos-7.9-test manifests/d2iq-base-CentOS-7.9$(NAME_POSTFIX).json.clean
-centos-test: centos-7.9-test-clean
-centos-7.9-release: centos-7.9-test release/d2iq-base-CentOS-7.9$(NAME_POSTFIX)
-centos-release: centos-7.9-release
-centos-7.9-ovf: manifests/ovf/d2iq-base-CentOS-7.9$(NAME_POSTFIX).ovf
-centos-ovf: centos-7.9-ovf
-
 rhel: manifests/d2iq-base-RHEL-86$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-88$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-810$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-94$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-96$(NAME_POSTFIX).json manifests/d2iq-base-RHEL-98$(NAME_POSTFIX).json
 rhel-8.4-test: manifests/tests/d2iq-base-RHEL-84$(NAME_POSTFIX).json.clean
 rhel-8.4-test-clean: rhel-8.4-test manifests/d2iq-base-RHEL-84$(NAME_POSTFIX).json.clean
@@ -135,8 +126,8 @@ flatcar-4081.3.10-ovf: manifests/ovf/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).
 flatcar-ovf: flatcar-4081.3.10-ovf
 
 
-test-all: ubuntu-test rocky-test centos-test rhel-test oraclelinux-test
-release: ubuntu-release rocky-release centos-release rhel-release oraclelinux-release
+test-all: ubuntu-test rocky-test rhel-test oraclelinux-test
+release: ubuntu-release rocky-release rhel-release oraclelinux-release
 
 .PHONY: list-os-versions
 list-os-versions:

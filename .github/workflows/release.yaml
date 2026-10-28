@@ -36,8 +36,6 @@ on:
           - rocky-9.7
           - rocky-9.8
           - os-rocky
-          - centos-7.9
-          - os-centos
           - rhel-8.6
           - rhel-8.8
           - rhel-8.10
