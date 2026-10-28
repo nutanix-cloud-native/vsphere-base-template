@@ -48,8 +48,14 @@ ${PIP_CMD} install -r "${CLOUDINIT_EXTRACT_FOLDER}/cloud-init-${CLOUDINIT_VERSIO
 
 /bin/systemctl enable cloud-config.service
 /bin/systemctl enable cloud-final.service
-/bin/systemctl enable cloud-init.service
 /bin/systemctl enable cloud-init-local.service
+# cloud-init 24.3+ renamed cloud-init.service -> cloud-init-network.service
+# and added cloud-init-main.service as the primary single-process unit
+if systemctl cat cloud-init-main.service >/dev/null 2>&1; then
+  /bin/systemctl enable cloud-init-main.service cloud-init-network.service
+else
+  /bin/systemctl enable cloud-init.service
+fi
 
 /bin/systemctl daemon-reload
 

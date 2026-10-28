@@ -27,4 +27,10 @@ rm -Rf /var/lib/cloud/data/scripts \
 cloud-init clean --logs
 
 # ensure cloud-init is enabled
-systemctl enable cloud-init
+# cloud-init 24.3+ renamed cloud-init.service -> cloud-init-network.service
+# and added cloud-init-main.service as the primary single-process unit
+if systemctl cat cloud-init-main.service >/dev/null 2>&1; then
+  systemctl enable cloud-init-main.service cloud-init-network.service
+else
+  systemctl enable cloud-init
+fi
