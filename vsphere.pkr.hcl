@@ -213,6 +213,7 @@ locals {
     "RockyLinux"      = "${path.root}/bootfiles/rocky/rocky.ks"
     "RockyLinux-8.7"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
     "RockyLinux-9.1"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
+    "RockyLinux-9.7"  = "${path.root}/bootfiles/rocky/rocky-vault.ks"
     "CentOS"          = "${path.root}/bootfiles/centos/centos7.ks"
     "OracleLinux"     = "${path.root}/bootfiles/oraclelinux/oraclelinux9.ks"
     "Ubuntu"          = "${path.root}/bootfiles/ubuntu/autoinstall.yaml"
@@ -295,6 +296,7 @@ locals {
     "Ubuntu-20.04" = local.ubuntu_bootcommand
     "Ubuntu-22.04" = local.ubuntu_jammy_bootcommand
     "Ubuntu-24.04" = local.ubuntu_noble_bootcommand
+    "Ubuntu-26.04" = local.ubuntu_noble_bootcommand
     "Flatcar"      = local.flatcar_bootcommand
   }
 

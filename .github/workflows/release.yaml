@@ -29,14 +29,10 @@ on:
         required: true
         options:
           - all
-          - ubuntu-20
           - ubuntu-22
           - ubuntu-24
+          - ubuntu-26
           - os-ubuntu
-          - rocky-8.7
-          - rocky-9.1
-          - rocky-9.5
-          - rocky-9.6
           - rocky-9.7
           - rocky-9.8
           - os-rocky
@@ -138,11 +134,12 @@ jobs:
       fail-fast: false
       matrix: 
         os: 
-          - ubuntu-20
           - ubuntu-22
           - ubuntu-24
+          - ubuntu-26
           - rocky-8.7
-          - rocky-9.1
+          - rocky-9.7
+          - rocky-9.8
     steps:
       - uses: actions/checkout@v3
         with:

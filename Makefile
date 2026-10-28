@@ -40,51 +40,39 @@ release/d2iq-base-%$(NAME_POSTFIX): manifests/d2iq-base-%$(NAME_POSTFIX).json
 	$(GOVC) object.rename /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(shell jq -r '.builds[0].custom_data.template_name' $<) d2iq-base-$*
 	$(GOVC) object.mv /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(VSPHERE_FOLDER)/d2iq-base-$* /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(RELEASE_FOLDER)
 
-ubuntu: manifests/d2iq-base-Ubuntu-20.04$(NAME_POSTFIX).json manifests/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX).json manifests/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX).json
-ubuntu-20-test: manifests/tests/d2iq-base-Ubuntu-20.04$(NAME_POSTFIX).json.clean
-ubuntu-20-test-clean: ubuntu-20-test manifests/d2iq-base-Ubuntu-20.04$(NAME_POSTFIX).json.clean 
+ubuntu: manifests/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX).json manifests/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX).json manifests/d2iq-base-Ubuntu-26.04$(NAME_POSTFIX).json
 ubuntu-22-test: manifests/tests/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX).json.clean
 ubuntu-22-test-clean: ubuntu-22-test manifests/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX).json.clean
 ubuntu-24-test: manifests/tests/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX).json.clean
 ubuntu-24-test-clean: ubuntu-24-test manifests/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX).json.clean
-ubuntu-test: ubuntu-20-test-clean ubuntu-22-test-clean ubuntu-24-test-clean
-ubuntu-20-release: ubuntu-20-test release/d2iq-base-Ubuntu-20.04$(NAME_POSTFIX)
+ubuntu-26-test: manifests/tests/d2iq-base-Ubuntu-26.04$(NAME_POSTFIX).json.clean
+ubuntu-26-test-clean: ubuntu-26-test manifests/d2iq-base-Ubuntu-26.04$(NAME_POSTFIX).json.clean
+ubuntu-test: ubuntu-22-test-clean ubuntu-24-test-clean ubuntu-26-test-clean
 ubuntu-22-release: ubuntu-22-test release/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX)
 ubuntu-24-release: ubuntu-24-test release/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX)
-ubuntu-release: ubuntu-20-release ubuntu-22-release ubuntu-24-release
-ubuntu-20-ovf: manifests/ovf/d2iq-base-Ubuntu-20.04$(NAME_POSTFIX).ovf
+ubuntu-26-release: ubuntu-26-test release/d2iq-base-Ubuntu-26.04$(NAME_POSTFIX)
+ubuntu-release: ubuntu-22-release ubuntu-24-release ubuntu-26-release
 ubuntu-22-ovf: manifests/ovf/d2iq-base-Ubuntu-22.04$(NAME_POSTFIX).ovf
 ubuntu-24-ovf: manifests/ovf/d2iq-base-Ubuntu-24.04$(NAME_POSTFIX).ovf
-ubuntu-ovf: ubuntu-20-ovf ubuntu-22-ovf ubuntu-24-ovf 
+ubuntu-26-ovf: manifests/ovf/d2iq-base-Ubuntu-26.04$(NAME_POSTFIX).ovf
+ubuntu-ovf: ubuntu-22-ovf ubuntu-24-ovf ubuntu-26-ovf
 
-rocky: manifests/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.1$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.6$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.5$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).json
+rocky: manifests/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).json manifests/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).json
 rocky-8.7-test: manifests/tests/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX).json.clean
 rocky-8.7-test-clean: rocky-8.7-test manifests/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX).json.clean
-rocky-9.1-test: manifests/tests/d2iq-base-RockyLinux-9.1$(NAME_POSTFIX).json.clean
-rocky-9.1-test-clean: rocky-9.1-test manifests/d2iq-base-RockyLinux-9.1$(NAME_POSTFIX).json.clean
-rocky-9.5-test: manifests/tests/d2iq-base-RockyLinux-9.5$(NAME_POSTFIX).json.clean
-rocky-9.5-test-clean: rocky-9.5-test manifests/d2iq-base-RockyLinux-9.5$(NAME_POSTFIX).json.clean
-rocky-9.6-test: manifests/tests/d2iq-base-RockyLinux-9.6$(NAME_POSTFIX).json.clean
-rocky-9.6-test-clean: rocky-9.6-test manifests/d2iq-base-RockyLinux-9.6$(NAME_POSTFIX).json.clean
 rocky-9.7-test: manifests/tests/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).json.clean
 rocky-9.8-test: manifests/tests/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).json.clean
 rocky-9.7-test-clean: rocky-9.7-test manifests/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).json.clean
 rocky-9.8-test-clean: rocky-9.8-test manifests/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).json.clean
-rocky-test: rocky-8.7-test-clean rocky-9.1-test-clean rocky-9.6-test-clean rocky-9.7-test-clean rocky-9.8-test-clean #rocky-9.5-test-clean
+rocky-test: rocky-8.7-test-clean rocky-9.7-test-clean rocky-9.8-test-clean
 rocky-8.7-release: rocky-8.7-test release/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX)
-rocky-9.1-release: rocky-9.1-test release/d2iq-base-RockyLinux-9.1$(NAME_POSTFIX)
-rocky-9.5-release: rocky-9.5-test release/d2iq-base-RockyLinux-9.5$(NAME_POSTFIX)
-rocky-9.6-release: rocky-9.6-test release/d2iq-base-RockyLinux-9.6$(NAME_POSTFIX)
-rocky-9.7-release: rocky-9.7-test release/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX) 
+rocky-9.7-release: rocky-9.7-test release/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX)
 rocky-9.8-release: rocky-9.8-test release/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX)
-rocky-release: rocky-8.7-release rocky-9.1-release rocky-9.6-release rocky-9.7-release rocky-9.8-release #rocky-9.5-release
+rocky-release: rocky-8.7-release rocky-9.7-release rocky-9.8-release
 rocky-8.7-ovf: manifests/ovf/d2iq-base-RockyLinux-8.7$(NAME_POSTFIX).ovf
-rocky-9.1-ovf: manifests/ovf/d2iq-base-RockyLinux-9.1$(NAME_POSTFIX).ovf
-rocky-9.5-ovf: manifests/ovf/d2iq-base-RockyLinux-9.5$(NAME_POSTFIX).ovf
-rocky-9.6-ovf: manifests/ovf/d2iq-base-RockyLinux-9.6$(NAME_POSTFIX).ovf
 rocky-9.7-ovf: manifests/ovf/d2iq-base-RockyLinux-9.7$(NAME_POSTFIX).ovf
 rocky-9.8-ovf: manifests/ovf/d2iq-base-RockyLinux-9.8$(NAME_POSTFIX).ovf
-rocky-ovf: rocky-8.7-ovf rocky-9.1-ovf rocky-9.5-ovf rocky-9.6-ovf rocky-9.7-ovf rocky-9.8-ovf
+rocky-ovf: rocky-8.7-ovf rocky-9.7-ovf rocky-9.8-ovf
 
 centos: manifests/d2iq-base-CentOS-7.9$(NAME_POSTFIX).json
 centos-7.9-test: manifests/tests/d2iq-base-CentOS-7.9$(NAME_POSTFIX).json.clean
