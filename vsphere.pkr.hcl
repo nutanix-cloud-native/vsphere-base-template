@@ -279,10 +279,13 @@ locals {
   ]
 
   flatcar_bootcommand = [
-    "<wait><wait><wait>",
-    "sudo mkdir /bootfiles<enter>",
-    "sudo mount -o loop /dev/sr1 /bootfiles<enter>",
-    "sudo bash /bootfiles/bootfile.sh<enter>",
+    # Flatcar ISO needs a longer settle time before the console shell is ready.
+    # Packer cannot observe a guest IP until after flatcar-install reboots into
+    # the vmware_raw image (live ISO has no open-vm-tools).
+    "<wait30><wait10>",
+    "mkdir -p /bootfiles<enter>",
+    "mount -o loop /dev/sr1 /bootfiles<enter>",
+    "bash /bootfiles/bootfile.sh<enter>",
   ]
 
   # lookup by <distro_name>-<distro_version> fallback to <distro_name>
@@ -309,7 +312,9 @@ locals {
   default_bootwait = "10s"
   # lookup by <distro_name>-<distro_version> fallback to <distro_version> fallback to local.default_bootwait
   distro_bootwait_lookup = {
-    "Ubuntu" = "1s"
+    # Keep short enough to catch GRUB before autoboot, long enough for EFI firmware.
+    "Ubuntu" = "5s"
+    "Flatcar" = "45s"
   }
 
   # lookup by <distro_name>-<distro_version> fallback to <distro_version> fallback to ""
