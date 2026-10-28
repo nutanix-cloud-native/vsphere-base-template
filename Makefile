@@ -15,7 +15,7 @@ manifests/d2iq-base-%$(NAME_POSTFIX).json: packer.initialized vsphere.pkr.hcl $(
 
 .PHONY: manifests/d2iq-base-%$(NAME_POSTFIX).json.clean
 manifests/d2iq-base-%$(NAME_POSTFIX).json.clean: manifests/d2iq-base-%$(NAME_POSTFIX).json
-	bash -x mkinclude/helper_deletetemplate.sh $(shell jq -r '.builds[0].custom_data.template_name' $<) "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
+	GOVC=$(GOVC) bash -x mkinclude/helper_deletetemplate.sh $(shell jq -r '.builds[0].custom_data.template_name' $<) "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
 	mv $< $@
 
 manifests/tests/d2iq-base-%$(NAME_POSTFIX).json: manifests/d2iq-base-%$(NAME_POSTFIX).json clone-test.pkr.hcl
@@ -36,7 +36,8 @@ manifests/tests/d2iq-base-%$(NAME_POSTFIX).json.clean: manifests/tests/d2iq-base
 
 .PHONY: release/d2iq-base-%$(NAME_POSTFIX)
 release/d2iq-base-%$(NAME_POSTFIX): manifests/d2iq-base-%$(NAME_POSTFIX).json
-	bash mkinclude/helper_deletetemplate.sh $(RELEASE_FOLDER)/d2iq-base-$* "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
+	# Best-effort remove of a previous release template (ok if none exists yet).
+	GOVC=$(GOVC) bash mkinclude/helper_deletetemplate.sh $(RELEASE_FOLDER)/d2iq-base-$* "" $(shell jq -r '.builds[0].custom_data.resource_pool' $<)
 	$(GOVC) object.rename /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(shell jq -r '.builds[0].custom_data.template_name' $<) d2iq-base-$*
 	$(GOVC) object.mv /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(VSPHERE_FOLDER)/d2iq-base-$* /$(shell jq -r '.builds[0].custom_data.datacenter' $<)/vm/$(RELEASE_FOLDER)
 
