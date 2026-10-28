@@ -282,10 +282,11 @@ locals {
     # Flatcar ISO needs a longer settle time before the console shell is ready.
     # Packer cannot observe a guest IP until after flatcar-install reboots into
     # the vmware_raw image (live ISO has no open-vm-tools).
+    # Live console is the unprivileged `core` user, so sudo is required.
     "<wait30><wait10>",
-    "mkdir -p /bootfiles<enter>",
-    "mount -o loop /dev/sr1 /bootfiles<enter>",
-    "bash /bootfiles/bootfile.sh<enter>",
+    "sudo mkdir -p /bootfiles<enter>",
+    "sudo mount -o loop /dev/sr1 /bootfiles<enter>",
+    "sudo bash /bootfiles/bootfile.sh<enter>",
   ]
 
   # lookup by <distro_name>-<distro_version> fallback to <distro_name>
