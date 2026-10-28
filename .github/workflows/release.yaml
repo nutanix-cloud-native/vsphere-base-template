@@ -1,6 +1,10 @@
 ---
 name: Release
 
+# Required for softprops/action-gh-release (org default token is often read-only).
+permissions:
+  contents: write
+
 env:
   VSPHERE_USERNAME: ${{ secrets.VSPHERE_NKP_SRE_USERNAME }}
   VSPHERE_PASSWORD: ${{ secrets.VSPHERE_SRE_PASSWORD }}
@@ -112,28 +116,6 @@ jobs:
           sleep $((RANDOM % 90))
           make ${{ matrix.os }}-release
 
-  # GitHub Release + asset upload are tag-only. Manual workflow_dispatch rebuilds
-  # templates/OVFs without publishing a release (github.ref is refs/heads/... then).
-  create_release:
-    if: startsWith(github.ref, 'refs/tags/')
-    permissions:
-      contents: write
-    name: Create Github release
-    runs-on: self-hosted-nutanix-medium
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
   export:
     name: Generate OVF for Export
     needs: [release]
@@ -158,52 +140,33 @@ jobs:
           sudo apt-get update && sudo apt-get -y install xorriso
       - name: Export ovf for ${{ matrix.os }}
         run: make ${{ matrix.os }}-ovf
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: releaseovf
+          name: releaseovf-${{ matrix.os }}
           path: |
             manifests/ovf/*.ovf.tar.gz
-  artifactinventory:
-    name: Create artifact inventory
-    runs-on: self-hosted-nutanix-medium
-    needs: [export]
-    outputs:
-      listovf: ${{ steps.list.outputs.listovf }}
-    steps:
-      - uses: actions/download-artifact@v4
-        id: download
-        with:
-          name: releaseovf
-          path: releaseovf/
-      - name: json from downloaded artifacts
-        id: list
-        run: |
-          DATA=$(ls releaseovf/*.ovf.tar.gz | jq -R -s -c 'split("\n")[:-1]')
-          echo "listovf=$DATA" >> "$GITHUB_OUTPUT"
 
-  releaseassets:
+  # Tag-only: create the GitHub release and attach OVF assets.
+  # Manual workflow_dispatch rebuilds templates/OVFs without publishing.
+  publish_release:
     if: startsWith(github.ref, 'refs/tags/')
-    name: Upload release assets
+    name: Publish Github release
     permissions:
       contents: write
     runs-on: self-hosted-nutanix-medium
-    needs: [create_release, artifactinventory]
-    strategy:
-      fail-fast: false
-      matrix:
-        ovf: ${{ fromJSON(needs.artifactinventory.outputs.listovf) }}
+    needs: [export]
     steps:
-      - uses: actions/download-artifact@v3
-        id: download
+      - uses: actions/download-artifact@v4
         with:
-          name: releaseovf
+          pattern: releaseovf-*
           path: releaseovf/
-      - name: Upload ovf
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          merge-multiple: true
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./${{ matrix.ovf }}
-          asset_name: ${{ matrix.ovf }}
-          asset_content_type: application/zip
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: releaseovf/*.ovf.tar.gz
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
