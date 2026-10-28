@@ -1,4 +1,4 @@
 distribution="Ubuntu"
 distribution_version="22.04"
-iso_url="https://old-releases.ubuntu.com/releases/22.04/ubuntu-22.04.1-live-server-amd64.iso"
-iso_checksum="10f19c5b2b8d6db711582e0e27f5116296c34fe4b313ba45f9b201a5007056cb"
+iso_url="https://releases.ubuntu.com/22.04/ubuntu-22.04.5-live-server-amd64.iso"
+iso_checksum="9bc6028870aef3f74f4e16b900008179e78b130e6b0b9a140635434a46aa98b0"
