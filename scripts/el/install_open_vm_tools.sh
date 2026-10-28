@@ -9,7 +9,11 @@ major_version="$(sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release | a
 # make sure we use dnf on EL 8+
 if [ "$major_version" -ge 8 ]; then
     dnf -y install open-vm-tools
+    # Ensure we pick up the latest patched package version.
+    dnf -y upgrade open-vm-tools
 else
     yum -y install open-vm-tools
+    # Ensure we pick up the latest patched package version.
+    yum -y update open-vm-tools
 fi
 

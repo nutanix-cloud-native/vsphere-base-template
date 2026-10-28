@@ -36,3 +36,5 @@ autoinstall:
   late-commands:
     - echo '${ssh_username} ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/${ssh_username}
     - curtin in-target --target=/target -- chmod 440 /etc/sudoers.d/${ssh_username}
+    - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- apt-get install -y --only-upgrade open-vm-tools

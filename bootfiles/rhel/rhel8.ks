@@ -76,6 +76,7 @@ dnf makecache
 dnf install epel-release -y
 dnf makecache
 dnf install -y sudo open-vm-tools perl cloud-init cloud-utils-growpart
+dnf -y upgrade open-vm-tools
 dnf install -y openssh-server
 
 # Disable swap
