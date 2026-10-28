@@ -65,20 +65,23 @@ jobs:
         run: |
           echo "buildmatrix=$(jq -cn --arg os_list '' '{os: $os_list | split(",")}')" >> $GITHUB_ENV
       - name: Build OS matrix for all OS
-        if: github.event.inputs.os == 'all' || startsWith(github.ref, 'refs/tags/')
+        # Tag pushes always release everything; manual runs only when os=all.
+        if: startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.os == 'all')
         id: build-os-matrix
         run: |
           DYNAMICOSLIST=$(make list-os-versions | head -c -1  | tr '\n' ',')
           echo "buildmatrix=$(jq -cn --arg os_list $DYNAMICOSLIST '{os: $os_list | split(",")}')" >> $GITHUB_ENV
       - name: Build OS matrix for distro (os prefix)
-        if: contains(github.event.inputs.os, 'os-')
+        if: github.event_name == 'workflow_dispatch' && contains(github.event.inputs.os, 'os-')
         id: build-os-matrix-distro
         run: |
           OSPREFIX=$(echo ${{ github.event.inputs.os }} | cut -d '-' -f 2)
           DYNAMICOSLIST=$(make list-os-versions | grep -E "$OSPREFIX" | head -c -1  | tr '\n' ',')
           echo "buildmatrix=$(jq -cn --arg os_list $DYNAMICOSLIST '{os: $os_list | split(",")}')" >> $GITHUB_ENV
       - name: Build OS matrix for single OS
-        if: github.event.inputs.os != 'all' && !contains(github.event.inputs.os, 'os-')
+        # Must require workflow_dispatch: on tag pushes inputs.os is empty, and
+        # `!= 'all'` would otherwise overwrite the full matrix with [].
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.os != 'all' && !contains(github.event.inputs.os, 'os-')
         id: build-os-matrix-single
         run: |
           echo "buildmatrix=$(jq -cn --arg os_list '${{ github.event.inputs.os }}' '{os: $os_list | split(",")}')" >> $GITHUB_ENV
