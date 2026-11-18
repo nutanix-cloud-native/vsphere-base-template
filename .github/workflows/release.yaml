@@ -51,7 +51,7 @@ on:
           - os-rhel
           - oraclelinux-9.4
           - os-oraclelinux
-          - flatcar-4081.3.10
+          - flatcar-4081.3.12
           - os-flatcar
 
 jobs:

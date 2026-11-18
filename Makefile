@@ -117,14 +117,14 @@ oraclelinux-release: oraclelinux-9.4-release
 oraclelinux-9.4-ovf: manifests/ovf/d2iq-base-OracleLinux-94$(NAME_POSTFIX).ovf
 oraclelinux-ovf: oraclelinux-9.4-ovf
 
-flatcar: manifests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json
-flatcar-4081.3.10-test: manifests/tests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json.clean
-flatcar-4081.3.10-test-clean: flatcar-4081.3.10-test manifests/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).json.clean
-flatcar-test: flatcar-4081.3.10-test-clean
-flatcar-4081.3.10-release: flatcar-4081.3.10-test release/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX)
-flatcar-release: flatcar-4081.3.10-release
-flatcar-4081.3.10-ovf: manifests/ovf/d2iq-base-Flatcar-4081.3.10$(NAME_POSTFIX).ovf
-flatcar-ovf: flatcar-4081.3.10-ovf
+flatcar: manifests/d2iq-base-Flatcar-4081.3.12$(NAME_POSTFIX).json
+flatcar-4081.3.12-test: manifests/tests/d2iq-base-Flatcar-4081.3.12$(NAME_POSTFIX).json.clean
+flatcar-4081.3.12-test-clean: flatcar-4081.3.12-test manifests/d2iq-base-Flatcar-4081.3.12$(NAME_POSTFIX).json.clean
+flatcar-test: flatcar-4081.3.12-test-clean
+flatcar-4081.3.12-release: flatcar-4081.3.12-test release/d2iq-base-Flatcar-4081.3.12$(NAME_POSTFIX)
+flatcar-release: flatcar-4081.3.12-release
+flatcar-4081.3.12-ovf: manifests/ovf/d2iq-base-Flatcar-4081.3.12$(NAME_POSTFIX).ovf
+flatcar-ovf: flatcar-4081.3.12-ovf
 
 
 test-all: ubuntu-test rocky-test rhel-test oraclelinux-test
