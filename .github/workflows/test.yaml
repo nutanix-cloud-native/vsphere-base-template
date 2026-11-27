@@ -31,6 +31,7 @@ on:
           - rocky-9.6
           - rocky-9.7
           - rocky-9.8
+          - rocky-9.9
           - os-rocky
           - rhel-8.4
           - rhel-8.6
